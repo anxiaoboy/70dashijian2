@@ -44,7 +44,6 @@ $(function () {
         $("#link-reg").click();
       }
 
-      //进入登录页面index.html
       layui.layer.msg(res.message);
     });
   });
@@ -56,6 +55,7 @@ $(function () {
     var formdata = $(this).serialize();
     $.post("/api/login", formdata, function (res) {
       if (res.status === 0) {
+        //进入登录页面index.html
         window.location.href = "/index.html";
         res.token.length !== 0 &&
           window.localStorage.setItem("token", res.token);
