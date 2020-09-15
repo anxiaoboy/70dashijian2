@@ -16,7 +16,24 @@ $.ajaxPrefilter(function (options) {
 
   // 二、统一设置请求头
   // console.log(options.headers)
-  options.headers = {
-    Authorization: token,
+  // ES6的字符串的新增API方法：includes
+  if (!options.url.includes("/api/")) {
+    options.headers = {
+      Authorization: token,
+    };
+  }
+
+  // 三，统一判断token有无
+  options.complete = function (res) {
+    if (
+      res.responseJSON.status === 1 &&
+      res.responseJSON.message === "身份认证失败！"
+    ) {
+      // 1. 清除无效的token
+      window.localStorage.removeItem("token");
+      // 2. 回到login页面
+      window.location.href = "/login.html";
+    } else {
+    }
   };
 });
