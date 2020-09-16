@@ -42,13 +42,36 @@ $(function () {
   });
 
   //表单提交
-  $("#formPub").submit(function (e) {
+  $("#formpub").submit(function (e) {
     e.preventDefault();
     var fd = new FormData($(this)[0]);
     fd.append("state", state);
 
-    fd.forEach(function (v, k) {
-      console.log(k, v);
-    });
+    //获取选择的图片后 利用toBlob转换成接口要的进制数据
+    $image
+      .cropper("getCroppedCanvas", {
+        width: 400,
+        height: 280,
+      })
+      .toBlob(function (blob) {
+        // 将 Canvas 画布上的内容，转化为文件对象
+        // 得到文件对象后，进行后续的操作
+        fd.append("cover_img", blob);
+
+        $.ajax({
+          url: `/my/article/add`,
+          data: fd,
+          method: "POST",
+          //使用formData时需要设置的
+          contentType: false,
+          processData: false,
+          success: function (res) {
+            console.log(res);
+            if (res.status === 0) {
+              window.location.href = "/article/art_list.html";
+            }
+          },
+        });
+      });
   });
 });
